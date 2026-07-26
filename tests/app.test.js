@@ -24,6 +24,15 @@ describe('GET /', () => {
   });
 });
 
+describe('GET /about', () => {
+  it('renders the about page', async () => {
+    const res = await request(app).get('/about');
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('About Logan Vestal');
+    expect(res.text).toContain('Arizona');
+  });
+});
+
 describe('GET /health', () => {
   it('reports ok for the Railway healthcheck', async () => {
     const res = await request(app).get('/health');

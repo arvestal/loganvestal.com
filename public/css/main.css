@@ -23,6 +23,8 @@ a:hover { text-decoration: underline; }
 .nav {
   background: var(--bg2);
   border-bottom: 1px solid var(--border);
+  border-bottom: 3px solid;
+  border-image: linear-gradient(90deg, var(--text) 0 33%, var(--accent) 33% 66%, var(--text) 66% 100%) 1;
   position: sticky;
   top: 0;
 }
@@ -31,14 +33,31 @@ a:hover { text-decoration: underline; }
   max-width: 1100px;
   margin: 0 auto;
   padding: 0.9rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
 }
 
 .nav-brand {
   font-weight: 700;
   font-size: 1.1rem;
   color: var(--text);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 .nav-brand:hover { text-decoration: none; color: var(--accent); }
+
+.nav-brand-icon { font-size: 1.3rem; line-height: 1; }
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+}
+.nav-links a { color: var(--text2); font-weight: 600; }
+.nav-links a:hover { color: var(--text); text-decoration: none; }
 
 .main {
   max-width: 1100px;

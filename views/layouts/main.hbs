@@ -4,15 +4,26 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{#if pageTitle}}{{pageTitle}} — {{/if}}Logan Vestal</title>
-  <meta name="description" content="{{#if metaDescription}}{{metaDescription}}{{else}}Logan Vestal — original artwork.{{/if}}">
+  <meta name="description" content="{{#if metaDescription}}{{metaDescription}}{{else}}Logan Vestal is an Arizona-based artist creating original contemporary artwork. Browse the full gallery of paintings and drawings.{{/if}}">
   <meta name="robots" content="{{#if noIndex}}noindex, nofollow{{else}}index, follow{{/if}}">
   {{#if canonicalUrl}}<link rel="canonical" href="{{canonicalUrl}}">{{/if}}
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Logan Vestal">
+  <meta property="og:title" content="{{#if pageTitle}}{{pageTitle}} — {{/if}}Logan Vestal">
+  <meta property="og:description" content="{{#if metaDescription}}{{metaDescription}}{{else}}Logan Vestal is an Arizona-based artist creating original contemporary artwork.{{/if}}">
+  {{#if canonicalUrl}}<meta property="og:url" content="{{canonicalUrl}}">{{/if}}
+
   <link rel="stylesheet" href="/css/main.css?v={{assetVersion}}">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐼</text></svg>">
 </head>
 <body>
   <nav class="nav">
     <div class="nav-inner">
-      <a href="/" class="nav-brand">Logan Vestal</a>
+      <a href="/" class="nav-brand"><span class="nav-brand-icon" aria-hidden="true">🐼</span>Logan Vestal</a>
+      <ul class="nav-links">
+        <li><a href="/about">About</a></li>
+      </ul>
     </div>
   </nav>
 
@@ -22,6 +33,7 @@
 
   <footer class="footer">
     <nav class="footer-nav">
+      <a href="/about">About</a>
       <a href="https://allenvestal.com">Allen</a>
       <a href="https://maryvestal.com">Mary</a>
       <a href="https://taylorvestal.com">Taylor</a>
