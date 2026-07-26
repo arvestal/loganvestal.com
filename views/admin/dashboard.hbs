@@ -1,0 +1,31 @@
+<section class="admin-page">
+  <h1>Admin</h1>
+  <p class="section-meta">Signed in as {{adminEmail}} — <a href="/admin/logout">log out</a></p>
+
+  {{#if uploadError}}
+  <p class="admin-error">{{uploadError}}</p>
+  {{/if}}
+
+  <form class="admin-upload" action="/admin/artwork" method="post" enctype="multipart/form-data">
+    <input type="file" name="photo" accept="image/*" required>
+    <input type="text" name="alt" placeholder="Alt text (optional, can add later)">
+    <button type="submit" class="btn">Upload artwork</button>
+  </form>
+
+  <p class="section-meta">{{artwork.length}} pieces</p>
+
+  <div class="admin-grid">
+    {{#each artwork}}
+    <div class="admin-photo">
+      <img src="{{thumb}}" alt="{{alt}}" loading="lazy">
+      <form class="admin-alt-form" action="/admin/artwork/{{slug}}" method="post">
+        <input type="text" name="alt" value="{{alt}}" placeholder="Alt text">
+        <button type="submit">Save</button>
+      </form>
+      <form action="/admin/artwork/{{slug}}/delete" method="post" data-confirm-delete>
+        <button type="submit" class="admin-delete">Delete</button>
+      </form>
+    </div>
+    {{/each}}
+  </div>
+</section>

@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{#if pageTitle}}{{pageTitle}} — {{/if}}Site Name</title>
-  <meta name="description" content="{{#if metaDescription}}{{metaDescription}}{{else}}Replace with a default site description.{{/if}}">
+  <title>{{#if pageTitle}}{{pageTitle}} — {{/if}}Logan Vestal</title>
+  <meta name="description" content="{{#if metaDescription}}{{metaDescription}}{{else}}Logan Vestal — original artwork.{{/if}}">
   <meta name="robots" content="{{#if noIndex}}noindex, nofollow{{else}}index, follow{{/if}}">
   {{#if canonicalUrl}}<link rel="canonical" href="{{canonicalUrl}}">{{/if}}
   <link rel="stylesheet" href="/css/main.css?v={{assetVersion}}">
@@ -12,7 +12,7 @@
 <body>
   <nav class="nav">
     <div class="nav-inner">
-      <a href="/" class="nav-brand">Site Name</a>
+      <a href="/" class="nav-brand">Logan Vestal</a>
     </div>
   </nav>
 
@@ -22,11 +22,15 @@
 
   <footer class="footer">
     <nav class="footer-nav">
+      <a href="https://allenvestal.com">Allen</a>
       <a href="https://maryvestal.com">Mary</a>
       <a href="https://taylorvestal.com">Taylor</a>
-      <a href="https://loganvestal.com">Logan</a>
+      <a href="/admin">Admin</a>
     </nav>
-    <p>&copy; {{currentYear}} Site Name. All rights reserved.</p>
+    <p>&copy; {{currentYear}} Logan Vestal. All rights reserved.</p>
   </footer>
+
+  <script src="/js/gallery-lightbox.js" defer></script>
+  <script src="/js/admin-confirm.js" defer></script>
 </body>
 </html>

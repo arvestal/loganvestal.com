@@ -1,7 +1,7 @@
 {
-  "name": "website-starter",
+  "name": "loganvestal.com",
   "version": "1.0.0",
-  "description": "Starter template for new Node/Express/Handlebars sites — fork and rename.",
+  "description": "Logan Vestal's personal site — an art gallery with an admin panel for uploading and managing artwork.",
   "main": "src/app.js",
   "scripts": {
     "start": "node src/app.js",
@@ -27,9 +27,14 @@
     }
   },
   "dependencies": {
+    "cookie-parser": "^1.4.7",
     "dotenv": "^16.4.1",
     "express": "^4.19.2",
-    "express-handlebars": "^9.0.1"
+    "express-handlebars": "^9.0.1",
+    "google-auth-library": "^10.9.1",
+    "jsonwebtoken": "^9.0.3",
+    "multer": "^2.2.0",
+    "sharp": "^0.35.3"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

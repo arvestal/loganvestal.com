@@ -2,10 +2,15 @@ const request = require('supertest');
 const app = require('../src/app');
 
 describe('GET /', () => {
-  it('renders the landing page', async () => {
+  it('renders the homepage', async () => {
     const res = await request(app).get('/');
     expect(res.status).toBe(200);
-    expect(res.text).toContain('Site Name');
+    expect(res.text).toContain('Logan Vestal');
+  });
+
+  it('shows an empty state when there is no artwork yet', async () => {
+    const res = await request(app).get('/');
+    expect(res.text).toContain('No artwork posted yet');
   });
 
   it('omits the canonical link when SITE_HOST is unset', async () => {

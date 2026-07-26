@@ -1,4 +1,13 @@
-<section class="landing">
-  <h1>Site Name</h1>
-  <p>Replace this with real landing page content.</p>
+<section class="gallery-page">
+  {{#if artwork.length}}
+  <div class="gallery-grid">
+    {{#each artwork}}
+    <a href="{{full}}" class="gallery-item">
+      <img src="{{thumb}}" alt="{{alt}}" loading="lazy">
+    </a>
+    {{/each}}
+  </div>
+  {{else}}
+  <p class="section-meta">No artwork posted yet — check back soon.</p>
+  {{/if}}
 </section>

@@ -198,11 +198,22 @@ commit — that expectation doesn't relax even when the branch/PR ceremony does.
 
 ## Project-specific
 
-*(Replace everything below with details for the actual project.)*
-
 ### Core concept
 
-What this site/app does, in 2-3 sentences.
+Logan Vestal's personal site: an art gallery. The homepage *is* the gallery — a grid of her
+artwork, click-to-enlarge via lightbox. An admin panel at `/admin` (Google OAuth-gated) lets her
+upload new pieces and delete old ones. No separate "landing page" — this mirrors the ask that the
+site be an art gallery first and foremost.
+
+Ported from allenvestal.com's gallery/admin feature (same JWT-cookie + Google OAuth pattern,
+same volume-backed JSON store, same sharp image pipeline), renamed from "photos"/"gallery" to
+"artwork" throughout, with one addition: every uploaded image (both the full-size and thumbnail
+webp) gets a tiled "LOGAN VESTAL" watermark composited on at upload time, so saved/downloaded
+copies aren't clean.
+
+Future: may add Stripe-based purchasing (as built in playoff-fantasy) so pieces can be sold
+directly from the gallery. Not built yet — the admin CRUD above is the foundation it would sit on
+top of.
 
 ### Commands
 
@@ -215,20 +226,40 @@ npm test          # jest with coverage
 
 ### Architecture map
 
-- `src/app.js` — entry point, view engine setup, middleware, route mounting
-- `src/lib/` — pure/testable logic (helpers, data transforms)
-- `src/routes/` — Express routers
-- `views/` — Handlebars templates (`views/layouts/main.hbs` is the shared layout)
-- `public/` — static assets served as-is
+- `src/app.js` — entry point, view engine setup, middleware, route mounting, static serving of
+  `/img/art` from the artwork data dir
+- `src/lib/artwork-store.js` — JSON-file CRUD for artwork entries (slug, source, alt, date),
+  volume-backed via `ARTWORK_DATA_DIR`
+- `src/lib/artwork-upload.js` — sharp pipeline: resize to full (≤2000px) + thumb (480px wide)
+  webp, with the tiled watermark composited onto both
+- `src/lib/artwork.js` — maps store entries to the `{slug, thumb, full, alt}` shape the homepage
+  grid needs
+- `src/lib/admin-auth.js` — JWT admin-session cookie + comma-delimited `ADMIN_EMAIL` allow-list
+- `src/routes/admin.js` — Google OAuth login/callback, `requireAdmin` gate, upload/edit/delete
+  routes for artwork
+- `src/routes/index.js` — homepage, renders the gallery grid
+- `views/` — Handlebars templates (`views/layouts/main.hbs` is the shared layout;
+  `views/admin/` has the login + dashboard views)
+- `public/js/gallery-lightbox.js` — click-to-enlarge grid behavior (progressive enhancement)
+- `public/js/admin-confirm.js` — `confirm()` guard on artwork delete buttons
 
 ### Conventions specific to this project
 
-(Anything that doesn't apply to every fork of this template — naming, business rules, data
-sources, etc.)
+- Artwork slugs are `art-001`, `art-002`, ... (see `nextSlug` in `artwork-store.js`), mirroring
+  allenvestal.com's `tacoma-NNN` pattern but renamed for this project's content.
+- `ADMIN_EMAIL` is comma-delimited (`src/lib/admin-auth.js`'s `parseAdminEmails`) so both Logan
+  and Allen can administer the site through the same shared Google OAuth client — no per-site
+  OAuth app needed, just an extra authorized redirect URI in Google Cloud Console per domain.
+- Metadata is intentionally minimal (image + alt text only), matching allenvestal.com's photo
+  gallery rather than a richer art-catalog schema (title/medium/dimensions/year). Revisit this if
+  Stripe/sales are added — priced items will likely need at least a title and price field.
 
 ### Known footguns / past bugs (don't reintroduce)
 
-(Populate as they're discovered.)
+- Watermark tiles must stay wider than the rendered text or adjacent repeats overlap into an
+  illegible smear — this happened once during development (fixed by sizing `tileWidth` off the
+  actual text length in `watermarkSvg`, not an arbitrary fraction of image width). If the
+  watermark text changes, keep it derived the same way rather than picking a fixed tile size.
 
 ### Local dev
 
@@ -240,5 +271,7 @@ npm run dev
 
 ### Deployment
 
-- Railway project: _name_, service: _name_, custom domain: _domain_
-- DNS: _where it's hosted (Cloudflare/registrar/etc.)_
+- Railway project: _pending — see task list_, service: _pending_, custom domain: loganvestal.com
+- DNS: currently GoDaddy nameservers (with an active MX record — email is hosted there); planned
+  migration to Cloudflare per the "Deployment (custom domain + Cloudflare DNS)" section above,
+  preserving the existing MX/TXT records before flipping nameservers.
