@@ -271,7 +271,15 @@ npm run dev
 
 ### Deployment
 
-- Railway project: _pending — see task list_, service: _pending_, custom domain: loganvestal.com
-- DNS: currently GoDaddy nameservers (with an active MX record — email is hosted there); planned
-  migration to Cloudflare per the "Deployment (custom domain + Cloudflare DNS)" section above,
-  preserving the existing MX/TXT records before flipping nameservers.
+- Railway project: `logan-vestal`, service: `loganvestal-com`, custom domain: loganvestal.com
+  (+ www). Persistent volume mounted at `/data` (`ARTWORK_DATA_DIR=/data/artwork`).
+- DNS: migrated from GoDaddy to Cloudflare (nameservers `becky.ns.cloudflare.com` /
+  `rob.ns.cloudflare.com`). GoDaddy's original MX + email CNAMEs (secureserver.net) were
+  auto-imported by Cloudflare's "Add a Site" scan and preserved — email still works.
+- **The apex is Cloudflare-proxied (orange cloud), not DNS-only.** Railway's own Let's Encrypt
+  cert for the apex got stuck in `CERTIFICATE_STATUS_TYPE_VALIDATING_OWNERSHIP` well past normal
+  issuance time — same footgun as allenvestal.com (see above). Fixed the same way: proxied the
+  apex CNAME to match `www`, so Cloudflare's Universal SSL cert (confirmed via SAN:
+  `loganvestal.com`, `*.loganvestal.com`) serves both, sidestepping Railway's stuck internal
+  state entirely. Don't "fix" this by switching the apex back to DNS-only.
+- `www` → Cloudflare Page Rule 301s to the apex, per the standard pattern.
