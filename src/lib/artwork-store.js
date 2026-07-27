@@ -32,17 +32,21 @@ function nextSlug(pieces) {
   return `art-${String(max + 1).padStart(3, '0')}`;
 }
 
-function addArtwork(dataDir, { source, alt }) {
+function addArtwork(dataDir, { source, alt, caption }) {
   const pieces = listArtwork(dataDir);
   const slug = nextSlug(pieces);
-  const entry = { slug, source, alt, date: new Date().toISOString() };
+  const entry = {
+    slug, source, alt, caption, date: new Date().toISOString(),
+  };
   writeArtwork(dataDir, [...pieces, entry]);
   return entry;
 }
 
-function updateArtworkAlt(dataDir, slug, alt) {
+// alt (accessibility/SEO, not visually shown) and caption (shown under the photo in the
+// gallery) are edited together from the same admin form.
+function updateArtwork(dataDir, slug, { alt, caption }) {
   const pieces = listArtwork(dataDir);
-  const updated = pieces.map((p) => (p.slug === slug ? { ...p, alt } : p));
+  const updated = pieces.map((p) => (p.slug === slug ? { ...p, alt, caption } : p));
   writeArtwork(dataDir, updated);
   return updated.find((p) => p.slug === slug) || null;
 }
@@ -59,5 +63,5 @@ function deleteArtwork(dataDir, slug) {
 }
 
 module.exports = {
-  resolveDataDir, listArtwork, writeArtwork, nextSlug, addArtwork, updateArtworkAlt, deleteArtwork,
+  resolveDataDir, listArtwork, writeArtwork, nextSlug, addArtwork, updateArtwork, deleteArtwork,
 };

@@ -7,7 +7,7 @@ const {
   createAdminToken, verifyAdminToken, parseAdminEmails, TOKEN_COOKIE, STATE_COOKIE, STATE_TTL_MS,
 } = require('../lib/admin-auth');
 const {
-  resolveDataDir, listArtwork, addArtwork, updateArtworkAlt, deleteArtwork,
+  resolveDataDir, listArtwork, addArtwork, updateArtwork, deleteArtwork,
 } = require('../lib/artwork-store');
 const { processUpload } = require('../lib/artwork-upload');
 
@@ -132,7 +132,9 @@ router.post('/artwork', upload.single('photo'), async (req, res) => {
 
   try {
     const dataDir = resolveDataDir();
-    const entry = addArtwork(dataDir, { source: req.file.originalname, alt: req.body.alt || '' });
+    const entry = addArtwork(dataDir, {
+      source: req.file.originalname, alt: req.body.alt || '', caption: req.body.caption || '',
+    });
     await processUpload(req.file.buffer, dataDir, entry.slug);
     return res.redirect('/admin');
   } catch {
@@ -141,7 +143,9 @@ router.post('/artwork', upload.single('photo'), async (req, res) => {
 });
 
 router.post('/artwork/:slug', (req, res) => {
-  updateArtworkAlt(resolveDataDir(), req.params.slug, req.body.alt || '');
+  updateArtwork(resolveDataDir(), req.params.slug, {
+    alt: req.body.alt || '', caption: req.body.caption || '',
+  });
   res.redirect('/admin');
 });
 

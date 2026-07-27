@@ -7,6 +7,7 @@ function buildGalleryArtwork(pieces) {
     thumb: `/img/art/thumb/${p.slug}.webp`,
     full: `/img/art/full/${p.slug}.webp`,
     alt: p.alt || '',
+    caption: p.caption || '',
   }));
 }
 

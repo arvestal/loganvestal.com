@@ -5,9 +5,12 @@
   {{#if artwork.length}}
   <div class="gallery-grid">
     {{#each artwork}}
-    <a href="{{full}}" class="gallery-item">
-      <img src="{{thumb}}" alt="{{alt}}" loading="lazy">
-    </a>
+    <figure class="gallery-figure">
+      <a href="{{full}}" class="gallery-item">
+        <img src="{{thumb}}" alt="{{alt}}" loading="lazy">
+      </a>
+      {{#if caption}}<figcaption class="gallery-caption">{{caption}}</figcaption>{{/if}}
+    </figure>
     {{/each}}
   </div>
   {{else}}

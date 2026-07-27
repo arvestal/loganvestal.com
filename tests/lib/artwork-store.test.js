@@ -3,7 +3,7 @@ const os = require('os');
 const path = require('path');
 
 const {
-  resolveDataDir, listArtwork, writeArtwork, nextSlug, addArtwork, updateArtworkAlt, deleteArtwork,
+  resolveDataDir, listArtwork, writeArtwork, nextSlug, addArtwork, updateArtwork, deleteArtwork,
 } = require('../../src/lib/artwork-store');
 
 describe('resolveDataDir', () => {
@@ -57,7 +57,7 @@ describe('nextSlug', () => {
   });
 });
 
-describe('addArtwork / updateArtworkAlt / deleteArtwork', () => {
+describe('addArtwork / updateArtwork / deleteArtwork', () => {
   let dataDir;
 
   beforeEach(() => {
@@ -65,31 +65,41 @@ describe('addArtwork / updateArtworkAlt / deleteArtwork', () => {
   });
 
   it('appends a new piece with the next slug and current date', () => {
-    const entry = addArtwork(dataDir, { source: 'new.jpg', alt: 'A new piece' });
+    const entry = addArtwork(dataDir, { source: 'new.jpg', alt: 'A new piece', caption: 'A caption' });
     expect(entry.slug).toBe('art-001');
     expect(entry.source).toBe('new.jpg');
     expect(entry.alt).toBe('A new piece');
+    expect(entry.caption).toBe('A caption');
     expect(typeof entry.date).toBe('string');
     expect(listArtwork(dataDir)).toEqual([entry]);
   });
 
-  it('updates the alt text for a matching slug and leaves others untouched', () => {
+  it('updates the alt text and caption for a matching slug and leaves others untouched', () => {
     writeArtwork(dataDir, [
-      { slug: 'art-001', source: 'a.jpg', alt: 'old', date: '2020-01-01T00:00:00.000Z' },
-      { slug: 'art-002', source: 'b.jpg', alt: 'unchanged', date: '2020-01-02T00:00:00.000Z' },
+      {
+        slug: 'art-001', source: 'a.jpg', alt: 'old', caption: 'old caption', date: '2020-01-01T00:00:00.000Z',
+      },
+      {
+        slug: 'art-002', source: 'b.jpg', alt: 'unchanged', caption: 'unchanged caption', date: '2020-01-02T00:00:00.000Z',
+      },
     ]);
 
-    const updated = updateArtworkAlt(dataDir, 'art-001', 'new alt text');
+    const updated = updateArtwork(dataDir, 'art-001', { alt: 'new alt text', caption: 'new caption' });
     expect(updated.alt).toBe('new alt text');
+    expect(updated.caption).toBe('new caption');
     expect(listArtwork(dataDir)).toEqual([
-      { slug: 'art-001', source: 'a.jpg', alt: 'new alt text', date: '2020-01-01T00:00:00.000Z' },
-      { slug: 'art-002', source: 'b.jpg', alt: 'unchanged', date: '2020-01-02T00:00:00.000Z' },
+      {
+        slug: 'art-001', source: 'a.jpg', alt: 'new alt text', caption: 'new caption', date: '2020-01-01T00:00:00.000Z',
+      },
+      {
+        slug: 'art-002', source: 'b.jpg', alt: 'unchanged', caption: 'unchanged caption', date: '2020-01-02T00:00:00.000Z',
+      },
     ]);
   });
 
-  it('returns null from updateArtworkAlt when the slug does not exist', () => {
+  it('returns null from updateArtwork when the slug does not exist', () => {
     writeArtwork(dataDir, [{ slug: 'art-001', source: 'a.jpg', alt: 'old', date: '2020-01-01T00:00:00.000Z' }]);
-    expect(updateArtworkAlt(dataDir, 'art-999', 'x')).toBeNull();
+    expect(updateArtwork(dataDir, 'art-999', { alt: 'x', caption: 'y' })).toBeNull();
   });
 
   it('removes an artwork entry and its image files', () => {

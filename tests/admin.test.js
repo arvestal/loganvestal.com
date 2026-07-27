@@ -215,6 +215,7 @@ describe('admin artwork management', () => {
       .post('/admin/artwork')
       .set('Cookie', adminCookies())
       .field('alt', 'A brand new piece')
+      .field('caption', 'A brand new caption')
       .attach('photo', buffer, 'new.jpg');
 
     expect(res.status).toBe(302);
@@ -222,7 +223,9 @@ describe('admin artwork management', () => {
 
     const pieces = listArtwork(dataDir);
     expect(pieces).toHaveLength(2);
-    expect(pieces[1]).toMatchObject({ slug: 'art-002', source: 'new.jpg', alt: 'A brand new piece' });
+    expect(pieces[1]).toMatchObject({
+      slug: 'art-002', source: 'new.jpg', alt: 'A brand new piece', caption: 'A brand new caption',
+    });
     expect(fs.existsSync(path.join(dataDir, 'full/art-002.webp'))).toBe(true);
     expect(fs.existsSync(path.join(dataDir, 'thumb/art-002.webp'))).toBe(true);
   });
@@ -245,25 +248,25 @@ describe('admin artwork management', () => {
     expect(res.headers.location).toContain('JPEG');
   });
 
-  it('updates alt text for an existing piece', async () => {
+  it('updates alt text and caption for an existing piece', async () => {
     const res = await request(app)
       .post('/admin/artwork/art-001')
       .set('Cookie', adminCookies())
-      .send('alt=Updated alt text');
+      .send('alt=Updated alt text&caption=Updated caption');
 
     expect(res.status).toBe(302);
     expect(res.headers.location).toBe('/admin');
-    expect(listArtwork(dataDir)[0].alt).toBe('Updated alt text');
+    expect(listArtwork(dataDir)[0]).toMatchObject({ alt: 'Updated alt text', caption: 'Updated caption' });
   });
 
-  it('clears alt text to an empty string when the field is omitted', async () => {
+  it('clears alt text and caption to empty strings when the fields are omitted', async () => {
     const res = await request(app)
       .post('/admin/artwork/art-001')
       .set('Cookie', adminCookies())
       .send({});
 
     expect(res.status).toBe(302);
-    expect(listArtwork(dataDir)[0].alt).toBe('');
+    expect(listArtwork(dataDir)[0]).toMatchObject({ alt: '', caption: '' });
   });
 
   it('deletes a piece', async () => {

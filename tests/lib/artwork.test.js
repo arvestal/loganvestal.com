@@ -1,10 +1,14 @@
 const { buildGalleryArtwork } = require('../../src/lib/artwork');
 
 describe('buildGalleryArtwork', () => {
-  it('builds thumb/full URLs for each piece, preserving order and alt text', () => {
+  it('builds thumb/full URLs for each piece, preserving order, alt text, and caption', () => {
     const pieces = [
-      { slug: 'art-001', source: 'IMG_0001.jpeg', date: '2020-01-01T00:00:00.000Z', alt: 'First piece' },
-      { slug: 'art-002', source: 'IMG_0002.jpeg', date: '2020-01-02T00:00:00.000Z', alt: 'Second piece' },
+      {
+        slug: 'art-001', source: 'IMG_0001.jpeg', date: '2020-01-01T00:00:00.000Z', alt: 'First piece', caption: 'A caption',
+      },
+      {
+        slug: 'art-002', source: 'IMG_0002.jpeg', date: '2020-01-02T00:00:00.000Z', alt: 'Second piece', caption: '',
+      },
     ];
 
     expect(buildGalleryArtwork(pieces)).toEqual([
@@ -13,20 +17,24 @@ describe('buildGalleryArtwork', () => {
         thumb: '/img/art/thumb/art-001.webp',
         full: '/img/art/full/art-001.webp',
         alt: 'First piece',
+        caption: 'A caption',
       },
       {
         slug: 'art-002',
         thumb: '/img/art/thumb/art-002.webp',
         full: '/img/art/full/art-002.webp',
         alt: 'Second piece',
+        caption: '',
       },
     ]);
   });
 
-  it('falls back to an empty string when a piece has no alt text', () => {
+  it('falls back to an empty string when a piece has no alt text or caption', () => {
     const pieces = [{ slug: 'art-003', source: 'IMG_0003.jpeg', date: '2020-01-03T00:00:00.000Z' }];
     expect(buildGalleryArtwork(pieces)).toEqual([
-      { slug: 'art-003', thumb: '/img/art/thumb/art-003.webp', full: '/img/art/full/art-003.webp', alt: '' },
+      {
+        slug: 'art-003', thumb: '/img/art/thumb/art-003.webp', full: '/img/art/full/art-003.webp', alt: '', caption: '',
+      },
     ]);
   });
 });

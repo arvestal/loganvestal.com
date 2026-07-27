@@ -8,7 +8,8 @@
 
   <form class="admin-upload" action="/admin/artwork" method="post" enctype="multipart/form-data">
     <input type="file" name="photo" accept="image/*" required>
-    <input type="text" name="alt" placeholder="Alt text (optional, can add later)">
+    <input type="text" name="alt" placeholder="Alt text — for accessibility/SEO, not shown">
+    <input type="text" name="caption" placeholder="Caption — shown under the photo (optional)">
     <button type="submit" class="btn">Upload artwork</button>
   </form>
 
@@ -20,6 +21,7 @@
       <img src="{{thumb}}" alt="{{alt}}" loading="lazy">
       <form class="admin-alt-form" action="/admin/artwork/{{slug}}" method="post">
         <input type="text" name="alt" value="{{alt}}" placeholder="Alt text">
+        <input type="text" name="caption" value="{{caption}}" placeholder="Caption">
         <button type="submit">Save</button>
       </form>
       <form action="/admin/artwork/{{slug}}/delete" method="post" data-confirm-delete>
