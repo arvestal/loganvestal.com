@@ -1,10 +1,30 @@
 name: CI
 
 on:
+  push:
+    branches: [main]
   pull_request:
     types: [opened, ready_for_review, synchronize, reopened]
 
 jobs:
+  # ── Notify Slack immediately when a PR is opened / marked ready ──────────────
+  pr-opened:
+    if: |
+      github.event_name == 'pull_request' &&
+      (github.event.action == 'opened' || github.event.action == 'ready_for_review')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Slack — PR opened
+        run: |
+          curl -s -X POST "$SLACK_WEBHOOK_URL" \
+            -H 'Content-type: application/json' \
+            -d "{
+              \"text\": \"🔀 *New PR on loganvestal.com*\n*<${{ github.event.pull_request.html_url }}|${{ github.event.pull_request.title }}>*\n*Author:* ${{ github.event.pull_request.user.login }}\n*Branch:* \`${{ github.head_ref }}\` → \`${{ github.base_ref }}\`\"
+            }"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  # ── Run tests and notify Slack with pass / fail ──────────────────────────────
   test:
     runs-on: ubuntu-latest
     steps:
@@ -22,4 +42,31 @@ jobs:
         run: npm run lint
 
       - name: Run tests
-        run: npm test
+        id: tests
+        run: |
+          npm test 2>&1 | tee test_output.txt
+          echo "exit_code=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+
+      - name: Slack — tests passed
+        if: success()
+        run: |
+          SUMMARY=$(grep -E "^Tests:" test_output.txt | tail -1 || echo "Tests passed")
+          curl -s -X POST "$SLACK_WEBHOOK_URL" \
+            -H 'Content-type: application/json' \
+            -d "{
+              \"text\": \"✅ *Tests passed* on \`${{ github.ref_name }}\`\n${SUMMARY}\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run>\"
+            }"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Slack — tests failed
+        if: failure()
+        run: |
+          SUMMARY=$(grep -E "^Tests:" test_output.txt | tail -1 || echo "One or more tests failed")
+          curl -s -X POST "$SLACK_WEBHOOK_URL" \
+            -H 'Content-type: application/json' \
+            -d "{
+              \"text\": \"❌ *Tests failed* on \`${{ github.ref_name }}\`\n${SUMMARY}\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run>\"
+            }"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
