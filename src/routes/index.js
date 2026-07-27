@@ -20,4 +20,11 @@ router.get('/about', (req, res) => {
   });
 });
 
+router.get('/contact', (req, res) => {
+  res.render('contact', {
+    pageTitle: 'Contact',
+    metaDescription: 'Get in touch with Logan Vestal about her artwork.',
+  });
+});
+
 module.exports = router;

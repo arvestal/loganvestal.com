@@ -33,6 +33,15 @@ describe('GET /about', () => {
   });
 });
 
+describe('GET /contact', () => {
+  it('renders the contact page', async () => {
+    const res = await request(app).get('/contact');
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('Contact');
+    expect(res.text).toContain('mailto:ljvestal@gmail.com');
+  });
+});
+
 describe('GET /health', () => {
   it('reports ok for the Railway healthcheck', async () => {
     const res = await request(app).get('/health');
