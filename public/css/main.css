@@ -215,8 +215,9 @@ a:hover { text-decoration: underline; }
   border-radius: 6px;
 }
 
-.admin-alt-form { display: flex; gap: 0.4rem; }
-.admin-alt-form input { flex: 1; }
+.admin-alt-form { display: flex; flex-direction: column; gap: 0.4rem; }
+.admin-alt-form input { width: 100%; }
+.admin-alt-form button { align-self: flex-end; }
 
 input[type="text"] {
   background: var(--bg2);

@@ -204,6 +204,20 @@ describe('admin artwork management', () => {
     expect(res.text).toContain('Existing piece');
   });
 
+  it('uses singular "piece" when there is exactly one', async () => {
+    const res = await request(app).get('/admin').set('Cookie', adminCookies());
+    expect(res.text).toContain('1 piece</p>');
+  });
+
+  it('uses plural "pieces" when there is more than one', async () => {
+    writeArtwork(dataDir, [
+      { slug: 'art-001', source: 'existing.jpg', alt: 'Existing piece', date: '2020-01-01T00:00:00.000Z' },
+      { slug: 'art-002', source: 'existing2.jpg', alt: 'Another piece', date: '2020-01-02T00:00:00.000Z' },
+    ]);
+    const res = await request(app).get('/admin').set('Cookie', adminCookies());
+    expect(res.text).toContain('2 pieces</p>');
+  });
+
   it('uploads a new piece, converts it, and appends it to artwork.json', async () => {
     const buffer = await sharp({
       create: {

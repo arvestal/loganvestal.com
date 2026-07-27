@@ -121,6 +121,7 @@ router.get('/', (req, res) => {
     noIndex: true,
     adminEmail: req.adminEmail,
     artwork,
+    pieceCount: `${artwork.length} piece${artwork.length === 1 ? '' : 's'}`,
     uploadError: req.query.uploadError,
   });
 });
